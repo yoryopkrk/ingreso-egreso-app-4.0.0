@@ -1,0 +1,6 @@
+{
+  "alias": "ingreso-egreso",
+  "projects": {
+    "default": "ingreso-egreso-app-ed52a"
+  }
+}

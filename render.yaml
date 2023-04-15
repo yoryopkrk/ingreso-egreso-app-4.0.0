@@ -2,7 +2,9 @@ services:
   # A static site
   - type: web
     name: my blog
-    env: static
+    env:
+      dockerfilePath: ./Dockerfile
+      dockerContext: ./src
     buildCommand: yarn build
     staticPublishPath: ./build
     pullRequestPreviewsEnabled: true # optional

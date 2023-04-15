@@ -1,22 +1,48 @@
 services:
-  ingreso_egreso:
-    container_name: ingreso_egreso
-    build:
-      context: ./dist
-      dockerfile: ./Dockerfile
-    image: ingreso_egreso_image
-    #env_file:
-    #  - ./frontend/.env
-    stdin_open: true
-    tty: true
-    restart: always
-    ports:
-      - '80:80'
-    networks:
-      static-network:
-        ipv4_address: 172.31.0.4
-networks:
-  static-network:
-    ipam:
-      config:
-        - subnet: 172.31.0.0/24
+  # A Docker web service
+  - type: web
+    name: webdis
+    env: docker
+    repo: https://github.com/render-examples/webdis.git # optional
+    region: oregon # optional (defaults to oregon)
+    plan: standard # optional (defaults to starter instance type)
+    branch: master # optional (defaults to master)
+    rootDir: webdis
+    dockerCommand: ./webdis.sh # optional (defaults to Dockerfile command)
+    numInstances: 3 # optional (defaults to 1)
+    healthCheckPath: /
+    envVars:
+      - key: REDIS_HOST
+        fromService:
+          type: redis
+          name: lightning
+          property: host # available properties are listed below
+      - key: REDIS_PORT
+        fromService:
+          type: redis
+          name: lightning
+          property: port
+      - fromGroup: conc-settings
+  # A static site
+  - type: web
+    name: my blog
+    env: static
+    buildCommand: yarn build
+    staticPublishPath: ./build
+    pullRequestPreviewsEnabled: true # optional
+    buildFilter:
+      paths:
+      - src/**/*.js
+      ignoredPaths:
+      - src/**/*.test.js
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: sameorigin
+    routes:
+      - type: redirect
+        source: /old
+        destination: /new
+      - type: rewrite
+        source: /a/*
+        destination: /a

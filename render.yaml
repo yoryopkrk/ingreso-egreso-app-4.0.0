@@ -5,9 +5,9 @@ services:
     env:
       dockerfilePath: ./Dockerfile
       dockerContext: ./src
-    buildCommand: yarn build
+    #buildCommand: yarn build
+    buildCommand: ng build --prod --build-optimizer
     staticPublishPath: ./build
-    pullRequestPreviewsEnabled: true # optional
     buildFilter:
       paths:
       - src/**/*.js

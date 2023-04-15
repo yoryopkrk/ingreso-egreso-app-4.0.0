@@ -1,9 +1,9 @@
 services:
   # A static site
   - type: web
-    name: my blog
+    name: ingreso-egreso
     env:
-      dockerfilePath: ./Dockerfile
+      dockerfilePath: Dockerfile
       dockerContext: ./src
     #buildCommand: yarn build
     staticPublishPath: ./build

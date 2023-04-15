@@ -1,0 +1,22 @@
+services:
+  ingreso_egreso:
+    container_name: ingreso_egreso
+    build:
+      context: ./dist
+      dockerfile: ./Dockerfile
+    image: ingreso_egreso_image
+    #env_file:
+    #  - ./frontend/.env
+    stdin_open: true
+    tty: true
+    restart: always
+    ports:
+      - '80:80'
+    networks:
+      static-network:
+        ipv4_address: 172.31.0.4
+networks:
+  static-network:
+    ipam:
+      config:
+        - subnet: 172.31.0.0/24

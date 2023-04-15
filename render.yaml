@@ -3,8 +3,8 @@ services:
   - type: web
     name: ingreso-egreso
     env:
-      dockerfilePath: Dockerfile
-      dockerContext: ./src
+      dockerfilePath: ./sub/Dockerfile
+      dockerContext: ./sub/src
     #buildCommand: yarn build
     staticPublishPath: ./build
     buildFilter:

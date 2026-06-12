@@ -1,8 +1,4 @@
-
-
-
 export class User {
-
     public nombre: string;
     public email: string;
     public uid: string;
@@ -12,7 +8,6 @@ export class User {
         this.uid    = obj && obj.uid || null;
         this.email  = obj && obj.email || null;
     }
-
 }
 
 interface DataObj {
@@ -20,4 +15,3 @@ interface DataObj {
     email: string;
     nombre: string;
 }
-

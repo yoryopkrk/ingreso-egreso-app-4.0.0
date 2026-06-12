@@ -4,23 +4,16 @@ import { AuthService } from './auth.service';
 import { take } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthGuardService implements CanActivate, CanLoad {
-
-  constructor( public authService: AuthService ) { }
+  constructor(public authService: AuthService) {}
 
   canActivate() {
     return this.authService.isAuth();
   }
 
-
   canLoad() {
-    return this.authService.isAuth()
-              .pipe(
-                take(1)
-              );
+    return this.authService.isAuth().pipe(take(1));
   }
-
-
 }

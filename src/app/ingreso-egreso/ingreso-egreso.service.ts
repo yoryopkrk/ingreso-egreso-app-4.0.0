@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Firestore, addDoc, collection, collectionData, deleteDoc, doc } from '@angular/fire/firestore';
 import { IngresoEgreso } from './ingreso-egreso.model';
 import { AuthService } from '../auth/auth.service';
 import { Store } from '@ngrx/store';
@@ -17,7 +17,7 @@ export class IngresoEgresoService {
   ingresoEgresoItemsSubcription: Subscription = new Subscription();
 
 
-  constructor( private afDB: AngularFirestore,
+  constructor( private firestore: Firestore,
                public authService: AuthService,
                private store: Store<AppState>) { }
 
@@ -37,20 +37,9 @@ export class IngresoEgresoService {
 
   private ingresoEgresoItems( uid: string ) {
 
-    this.ingresoEgresoItemsSubcription = this.afDB.collection(`${ uid }/ingresos-egresos/items`)
-             .snapshotChanges()
-             .pipe(
-               map(  docData => {
+    const itemsCollection = collection(this.firestore, `${ uid }/ingresos-egresos/items`);
 
-                return docData.map( doc => {
-                  return {
-                    uid: doc.payload.doc.id,
-                    ...(doc.payload.doc.data() as IngresoEgreso)
-                  };
-                });
-
-               })
-             )
+    this.ingresoEgresoItemsSubcription = collectionData(itemsCollection, { idField: 'uid' })
              .subscribe( (coleccion: any[]) => {
 
               this.store.dispatch( new SetItemsAction(coleccion) );
@@ -71,16 +60,14 @@ export class IngresoEgresoService {
 
     const user = this.authService.getUsuario();
 
-    return this.afDB.doc(`${ user.uid }/ingresos-egresos`)
-            .collection('items').add({...ingresoEgreso});
+    return addDoc(collection(this.firestore, `${ user.uid }/ingresos-egresos/items`), {...ingresoEgreso});
   }
 
   borrarIngresoEgreso( uid: string ) {
 
     const user = this.authService.getUsuario();
 
-    return this.afDB.doc(`${ user.uid }/ingresos-egresos/items/${ uid }`)
-               .delete();
+    return deleteDoc(doc(this.firestore, `${ user.uid }/ingresos-egresos/items/${ uid }`));
 
   }
 

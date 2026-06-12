@@ -1,36 +1,30 @@
-
-
-
 import * as fromAuth from './auth.actions';
 import { User } from './user.model';
 
 export interface AuthState {
-    user: User;
+  user: User | null;
 }
 
 const estadoInicial: AuthState = {
-    user: null
+  user: null,
 };
 
-export function authReducer( state = estadoInicial, action: fromAuth.acciones ): AuthState {
+export function authReducer(
+  state = estadoInicial,
+  action: fromAuth.acciones,
+): AuthState {
+  switch (action.type) {
+    case fromAuth.SET_USER:
+      return {
+        user: { ...action.user },
+      };
 
-    switch ( action.type ) {
+    case fromAuth.UNSET_USER:
+      return {
+        user: null,
+      };
 
-        case fromAuth.SET_USER:
-            return {
-                user: { ... action.user }
-            };
-
-        case fromAuth.UNSET_USER:
-            return {
-                user: null
-            };
-
-        default:
-            return state;
-
-    }
-
-
+    default:
+      return state;
+  }
 }
-

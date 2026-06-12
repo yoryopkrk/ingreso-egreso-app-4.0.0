@@ -1,17 +1,24 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { DashboardComponent } from '../dashboard/dashboard.component';
-import { IngresoEgresoComponent } from './ingreso-egreso.component';
-import { EstadisticaComponent } from './estadistica/estadistica.component';
-import { DetalleComponent } from './detalle/detalle.component';
-import { OrdenIngresoEgresoPipe } from './orden-ingreso-egreso.pipe';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { ReactiveFormsModule } from "@angular/forms";
 
-import { ReactiveFormsModule } from '@angular/forms';
-import { BaseChartDirective, provideCharts, withDefaultRegisterables } from 'ng2-charts';
-import { SharedModule } from '../shared/shared.module';
-import { DashboardRoutingModule } from '../dashboard/dashboard-routing.module';
-import { StoreModule } from '@ngrx/store';
-import { ingresoEgresoReducer } from './ingreso-egreso.reducer';
+import {
+  BaseChartDirective,
+  provideCharts,
+  withDefaultRegisterables,
+} from "ng2-charts";
+
+import { StoreModule } from "@ngrx/store";
+
+import { DashboardComponent } from "../dashboard/dashboard.component";
+import { IngresoEgresoComponent } from "./ingreso-egreso.component";
+import { EstadisticaComponent } from "./estadistica/estadistica.component";
+import { DetalleComponent } from "./detalle/detalle.component";
+import { OrdenIngresoEgresoPipe } from "./orden-ingreso-egreso.pipe";
+
+import { SharedModule } from "../shared/shared.module";
+import { DashboardRoutingModule } from "../dashboard/dashboard-routing.module";
+import { ingresoEgresoReducer } from "./ingreso-egreso.reducer";
 
 @NgModule({
   imports: [
@@ -20,7 +27,7 @@ import { ingresoEgresoReducer } from './ingreso-egreso.reducer';
     BaseChartDirective,
     SharedModule,
     DashboardRoutingModule,
-    StoreModule.forFeature('ingresoEgreso', ingresoEgresoReducer)
+    StoreModule.forFeature("ingresoEgreso", ingresoEgresoReducer),
   ],
   declarations: [
     DashboardComponent,
@@ -29,8 +36,6 @@ import { ingresoEgresoReducer } from './ingreso-egreso.reducer';
     DetalleComponent,
     OrdenIngresoEgresoPipe,
   ],
-  providers: [
-    provideCharts(withDefaultRegisterables())
-  ]
+  providers: [provideCharts(withDefaultRegisterables())],
 })
-export class IngresoEgresoModule { }
+export class IngresoEgresoModule {}

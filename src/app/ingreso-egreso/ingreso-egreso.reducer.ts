@@ -1,44 +1,35 @@
-
 import * as fromIngresoEgreso from './ingreso-egreso.actions';
 import { IngresoEgreso } from './ingreso-egreso.model';
 import { AppState as RootAppState } from '../app.reducer';
 
 export interface IngresoEgresoState {
-    items: IngresoEgreso[];
+  items: IngresoEgreso[];
 }
 
 export interface AppState extends RootAppState {
-    ingresoEgreso: IngresoEgresoState;
+  ingresoEgreso: IngresoEgresoState;
 }
 
 const estadoInicial: IngresoEgresoState = {
-    items: []
+  items: [],
 };
 
+export function ingresoEgresoReducer(
+  state = estadoInicial,
+  action: fromIngresoEgreso.acciones,
+): IngresoEgresoState {
+  switch (action.type) {
+    case fromIngresoEgreso.SET_ITEMS:
+      return {
+        items: action.items.map((item) => ({ ...item })),
+      };
 
-export function ingresoEgresoReducer( state = estadoInicial, action: fromIngresoEgreso.acciones ): IngresoEgresoState {
+    case fromIngresoEgreso.UNSET_ITEMS:
+      return {
+        items: [],
+      };
 
-    switch ( action.type ) {
-
-        case fromIngresoEgreso.SET_ITEMS:
-            return {
-                items: [
-                    ...action.items.map( item => {
-                        return {
-                            ...item
-                        };
-                    })
-                ]
-            };
-
-        case fromIngresoEgreso.UNSET_ITEMS:
-            return {
-                items: []
-            };
-
-        default:
-            return state;
-
-    }
-
+    default:
+      return state;
+  }
 }

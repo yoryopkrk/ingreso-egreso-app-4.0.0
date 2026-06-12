@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 
 import {
   Auth,
@@ -7,36 +7,30 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-} from '@angular/fire/auth';
+} from "@angular/fire/auth";
 
-import {
-  Firestore,
-  doc,
-  docData,
-  setDoc,
-} from '@angular/fire/firestore';
+import { Firestore, doc, getDoc, setDoc } from "@angular/fire/firestore";
 
-import { Router } from '@angular/router';
+import { Router } from "@angular/router";
 
-import { Store } from '@ngrx/store';
+import { Store } from "@ngrx/store";
 import {
   ActivarLoadingAction,
   DesactivarLoadingAction,
-} from '../shared/ui.accions';
+} from "../shared/ui.accions";
 
-import { map } from 'rxjs/operators';
-import { Observable, Subscription } from 'rxjs';
+import { map } from "rxjs/operators";
+import { Observable, Subscription } from "rxjs";
 
-import Swal from 'sweetalert2';
-import { User } from './user.model';
-import { AppState } from '../app.reducer';
-import { SetUserAction, UnsetUserAction } from './auth.actions';
+import Swal from "sweetalert2";
+import { User } from "./user.model";
+import { AppState } from "../app.reducer";
+import { SetUserAction, UnsetUserAction } from "./auth.actions";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class AuthService {
-  private userSubscription: Subscription = new Subscription();
   private authSubscription: Subscription = new Subscription();
   private usuario: User | null = null;
 
@@ -48,23 +42,28 @@ export class AuthService {
   ) {}
 
   initAuthListener(): void {
-    this.authSubscription = authState(this.auth).subscribe((fbUser: FirebaseUser | null) => {
-      if (fbUser) {
-        const usuarioDoc = doc(this.firestore, `${fbUser.uid}/usuario`);
+    this.authSubscription.unsubscribe();
 
-        this.userSubscription = docData(usuarioDoc).subscribe((usuarioObj: any) => {
-          const newUser = new User(usuarioObj);
-          this.store.dispatch(new SetUserAction(newUser));
-          this.usuario = newUser;
+    this.authSubscription = authState(this.auth).subscribe(
+      (fbUser: FirebaseUser | null) => {
+        if (!fbUser) {
+          this.usuario = null;
+          this.store.dispatch(new UnsetUserAction());
+          return;
+        }
+
+        this.cargarUsuarioFirestore(fbUser).catch((error: unknown) => {
+          console.error(error);
+
+          this.usuario = null;
+          this.store.dispatch(new UnsetUserAction());
+
+          const message =
+            error instanceof Error ? error.message : "Error desconocido";
+          Swal.fire("Error cargando usuario", message, "error");
         });
-
-        return;
-      }
-
-      this.usuario = null;
-      this.userSubscription.unsubscribe();
-      this.store.dispatch(new UnsetUserAction());
-    });
+      },
+    );
   }
 
   crearUsuario(nombre: string, email: string, password: string): void {
@@ -72,28 +71,25 @@ export class AuthService {
 
     createUserWithEmailAndPassword(this.auth, email, password)
       .then((resp) => {
-        if (!resp.user) {
-          throw new Error('No se pudo obtener el usuario creado.');
-        }
-
-        const user: User = {
+        const user = new User({
           uid: resp.user.uid,
           nombre,
           email: resp.user.email ?? email,
-        };
+        });
 
-        return setDoc(doc(this.firestore, `${user.uid}/usuario`), { ...user });
+        return setDoc(doc(this.firestore, `usuarios/${user.uid}`), { ...user });
       })
       .then(() => {
-        this.router.navigate(['/']);
         this.store.dispatch(new DesactivarLoadingAction());
+        this.router.navigate(["/"]);
       })
       .catch((error: unknown) => {
         console.error(error);
         this.store.dispatch(new DesactivarLoadingAction());
 
-        const message = error instanceof Error ? error.message : 'Error desconocido';
-        Swal.fire('Error en el registro', message, 'error');
+        const message =
+          error instanceof Error ? error.message : "Error desconocido";
+        Swal.fire("Error en el registro", message, "error");
       });
   }
 
@@ -103,14 +99,15 @@ export class AuthService {
     signInWithEmailAndPassword(this.auth, email, password)
       .then(() => {
         this.store.dispatch(new DesactivarLoadingAction());
-        this.router.navigate(['/']);
+        this.router.navigate(["/"]);
       })
       .catch((error: unknown) => {
         console.error(error);
         this.store.dispatch(new DesactivarLoadingAction());
 
-        const message = error instanceof Error ? error.message : 'Error desconocido';
-        Swal.fire('Error en el login', message, 'error');
+        const message =
+          error instanceof Error ? error.message : "Error desconocido";
+        Swal.fire("Error en el login", message, "error");
       });
   }
 
@@ -119,13 +116,14 @@ export class AuthService {
       .then(() => {
         this.usuario = null;
         this.store.dispatch(new UnsetUserAction());
-        this.router.navigate(['/login']);
+        this.router.navigate(["/login"]);
       })
       .catch((error: unknown) => {
         console.error(error);
 
-        const message = error instanceof Error ? error.message : 'Error desconocido';
-        Swal.fire('Error al cerrar sesión', message, 'error');
+        const message =
+          error instanceof Error ? error.message : "Error desconocido";
+        Swal.fire("Error al cerrar sesión", message, "error");
       });
   }
 
@@ -133,7 +131,7 @@ export class AuthService {
     return authState(this.auth).pipe(
       map((fbUser: FirebaseUser | null) => {
         if (fbUser === null) {
-          this.router.navigate(['/login']);
+          this.router.navigate(["/login"]);
           return false;
         }
 
@@ -144,5 +142,40 @@ export class AuthService {
 
   getUsuario(): User | null {
     return this.usuario ? ({ ...this.usuario } as User) : null;
+  }
+
+  private async cargarUsuarioFirestore(fbUser: FirebaseUser): Promise<void> {
+    const usuarioDocRef = doc(this.firestore, `usuarios/${fbUser.uid}`);
+    const usuarioSnap = await getDoc(usuarioDocRef);
+
+    if (usuarioSnap.exists()) {
+      const usuario = new User({
+        ...usuarioSnap.data(),
+        uid: fbUser.uid,
+        email: fbUser.email ?? "",
+      });
+
+      this.setUsuario(usuario);
+      return;
+    }
+
+    const usuario = new User({
+      uid: fbUser.uid,
+      email: fbUser.email ?? "",
+      nombre: fbUser.displayName ?? "",
+    });
+
+    await setDoc(usuarioDocRef, { ...usuario });
+
+    this.setUsuario(usuario);
+  }
+
+  private setUsuario(usuario: User): void {
+    if (!usuario.uid) {
+      throw new Error("El usuario no tiene UID.");
+    }
+
+    this.usuario = usuario;
+    this.store.dispatch(new SetUserAction(usuario));
   }
 }

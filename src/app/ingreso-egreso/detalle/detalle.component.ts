@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { AppState } from '../../app.reducer';
 import { IngresoEgreso } from '../ingreso-egreso.model';
 import { Subscription } from 'rxjs';
 import { IngresoEgresoService } from '../ingreso-egreso.service';
@@ -13,32 +12,43 @@ import * as fromIngresoEgreso from '../ingreso-egreso.reducer';
   selector: 'app-detalle',
   standalone: false,
   templateUrl: './detalle.component.html',
-  styles: []
+  styles: [],
 })
 export class DetalleComponent implements OnInit, OnDestroy {
-
-  items: IngresoEgreso[];
+  items: IngresoEgreso[] = [];
   subscription: Subscription = new Subscription();
 
-  constructor( private store: Store<fromIngresoEgreso.AppState>,
-               public ingresoEgresoService: IngresoEgresoService) { }
+  constructor(
+    private readonly store: Store<fromIngresoEgreso.AppState>,
+    public readonly ingresoEgresoService: IngresoEgresoService,
+  ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.subscription = this.store.select('ingresoEgreso')
-        .subscribe( ingresoEgreso => {
-          this.items = ingresoEgreso.items;
-        });
+      .subscribe((ingresoEgreso) => {
+        this.items = ingresoEgreso.items;
+      });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
-  borrarItem( item: IngresoEgreso ) {
-    this.ingresoEgresoService.borrarIngresoEgreso( item.uid )
-        .then( () => {
-          Swal.fire('Eliminado', item.descripcion, 'success');
-        });
-  }
+  borrarItem(item: IngresoEgreso): void {
+    if (!item.id) {
+      Swal.fire('Error', 'No se encontró el ID del registro.', 'error');
+      return;
+    }
 
+    this.ingresoEgresoService.borrarIngresoEgreso(item.id)
+      .then(() => {
+        Swal.fire('Eliminado', item.descripcion, 'success');
+      })
+      .catch((error: unknown) => {
+        console.error(error);
+
+        const message = error instanceof Error ? error.message : 'Error desconocido';
+        Swal.fire('Error al eliminar', message, 'error');
+      });
+  }
 }

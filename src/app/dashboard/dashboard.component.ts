@@ -3,6 +3,7 @@ import { IngresoEgresoService } from '../ingreso-egreso/ingreso-egreso.service';
 
 @Component({
   selector: 'app-dashboard',
+  standalone: false,
   templateUrl: './dashboard.component.html',
   styles: []
 })

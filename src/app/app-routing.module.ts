@@ -13,7 +13,7 @@ const routes: Routes = [
     { path: 'register', component: RegisterComponent },
     {
         path: '',
-        loadChildren: './ingreso-egreso/ingreso-egreso.module#IngresoEgresoModule',
+        loadChildren: () => import('./ingreso-egreso/ingreso-egreso.module').then(m => m.IngresoEgresoModule),
         canLoad: [ AuthGuardService ]
     },
     { path: '**', redirectTo: '' },

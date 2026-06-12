@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
-import { AngularFireAuthModule } from 'angularfire2/auth';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { RouterModule } from '@angular/router';
 
 

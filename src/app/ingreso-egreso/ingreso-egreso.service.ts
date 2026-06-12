@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from 'angularfire2/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { IngresoEgreso } from './ingreso-egreso.model';
 import { AuthService } from '../auth/auth.service';
 import { Store } from '@ngrx/store';
@@ -45,7 +45,7 @@ export class IngresoEgresoService {
                 return docData.map( doc => {
                   return {
                     uid: doc.payload.doc.id,
-                    ...doc.payload.doc.data()
+                    ...(doc.payload.doc.data() as IngresoEgreso)
                   };
                 });
 

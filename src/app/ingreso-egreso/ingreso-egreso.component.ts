@@ -14,6 +14,7 @@ import * as fromIngresoEgreso from '../ingreso-egreso/ingreso-egreso.reducer';
 
 @Component({
   selector: 'app-ingreso-egreso',
+  standalone: false,
   templateUrl: './ingreso-egreso.component.html',
   styles: []
 })
@@ -54,7 +55,7 @@ export class IngresoEgresoComponent implements OnInit, OnDestroy {
           .then( () => {
 
             this.store.dispatch( new DesactivarLoadingAction() );
-            Swal('Creado', ingresoEgreso.descripcion, 'success');
+            Swal.fire('Creado', ingresoEgreso.descripcion, 'success');
             this.forma.reset({ monto: 0 });
 
           });

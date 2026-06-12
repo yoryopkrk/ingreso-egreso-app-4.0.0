@@ -8,6 +8,7 @@ import { IngresoEgresoService } from '../../ingreso-egreso/ingreso-egreso.servic
 
 @Component({
   selector: 'app-sidebar',
+  standalone: false,
   templateUrl: './sidebar.component.html',
   styles: []
 })

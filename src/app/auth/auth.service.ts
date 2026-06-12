@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import { AngularFireAuth } from 'angularfire2/auth';
-import { AngularFirestore } from 'angularfire2/firestore';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 import { Router } from '@angular/router';
 
@@ -10,7 +10,8 @@ import { ActivarLoadingAction,
          DesactivarLoadingAction } from '../shared/ui.accions';
 
 
-import * as firebase from 'firebase';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
 import { map } from 'rxjs/operators';
 
 import Swal from 'sweetalert2';
@@ -26,7 +27,7 @@ import { Subscription } from 'rxjs';
 export class AuthService {
 
   private userSubscription: Subscription = new Subscription();
-  private usuario: User;
+  private usuario: User | null = null;
 
   constructor( private afAuth: AngularFireAuth,
                private router: Router,
@@ -65,7 +66,7 @@ export class AuthService {
 
     this.store.dispatch( new ActivarLoadingAction()  );
 
-    this.afAuth.auth
+    this.afAuth
         .createUserWithEmailAndPassword(email, password)
         .then( resp => {
 
@@ -90,7 +91,7 @@ export class AuthService {
         .catch( error => {
           console.error(error);
           this.store.dispatch( new DesactivarLoadingAction()  );
-          Swal('Error en el login', error.message, 'error');
+          Swal.fire('Error en el login', error.message, 'error');
         });
 
 
@@ -102,7 +103,7 @@ export class AuthService {
 
     this.store.dispatch( new ActivarLoadingAction()  );
 
-    this.afAuth.auth
+    this.afAuth
         .signInWithEmailAndPassword(email, password)
         .then( resp => {
 
@@ -114,7 +115,7 @@ export class AuthService {
         .catch( error => {
           console.error(error);
           this.store.dispatch( new DesactivarLoadingAction()  );
-          Swal('Error en el login', error.message, 'error');
+          Swal.fire('Error en el login', error.message, 'error');
         });
 
   }
@@ -122,7 +123,7 @@ export class AuthService {
   logout() {
 
     this.router.navigate(['/login']);
-    this.afAuth.auth.signOut();
+    this.afAuth.signOut();
 
     this.store.dispatch( new UnsetUserAction() );
 
@@ -144,7 +145,7 @@ export class AuthService {
   }
 
   getUsuario() {
-    return { ...this.usuario };
+    return { ...this.usuario } as User;
   }
 
 }

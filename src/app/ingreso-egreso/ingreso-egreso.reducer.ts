@@ -1,13 +1,13 @@
 
 import * as fromIngresoEgreso from './ingreso-egreso.actions';
 import { IngresoEgreso } from './ingreso-egreso.model';
-import { AppState } from '../app.reducer';
+import { AppState as RootAppState } from '../app.reducer';
 
 export interface IngresoEgresoState {
     items: IngresoEgreso[];
 }
 
-export interface AppState extends AppState {
+export interface AppState extends RootAppState {
     ingresoEgreso: IngresoEgresoState;
 }
 
@@ -42,4 +42,3 @@ export function ingresoEgresoReducer( state = estadoInicial, action: fromIngreso
     }
 
 }
-

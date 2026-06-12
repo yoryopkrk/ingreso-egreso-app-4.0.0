@@ -6,6 +6,7 @@ import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-navbar',
+  standalone: false,
   templateUrl: './navbar.component.html',
   styles: []
 })

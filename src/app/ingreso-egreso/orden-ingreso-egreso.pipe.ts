@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { IngresoEgreso } from './ingreso-egreso.model';
 
 @Pipe({
-  name: 'ordenIngresoEgreso'
+  name: 'ordenIngresoEgreso',
+  standalone: false
 })
 export class OrdenIngresoEgresoPipe implements PipeTransform {
 

@@ -7,7 +7,7 @@ import { DetalleComponent } from './detalle/detalle.component';
 import { OrdenIngresoEgresoPipe } from './orden-ingreso-egreso.pipe';
 
 import { ReactiveFormsModule } from '@angular/forms';
-import { ChartsModule } from 'ng2-charts';
+import { BaseChartDirective, provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { SharedModule } from '../shared/shared.module';
 import { DashboardRoutingModule } from '../dashboard/dashboard-routing.module';
 import { StoreModule } from '@ngrx/store';
@@ -17,7 +17,7 @@ import { ingresoEgresoReducer } from './ingreso-egreso.reducer';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    ChartsModule,
+    BaseChartDirective,
     SharedModule,
     DashboardRoutingModule,
     StoreModule.forFeature('ingresoEgreso', ingresoEgresoReducer)
@@ -28,6 +28,9 @@ import { ingresoEgresoReducer } from './ingreso-egreso.reducer';
     EstadisticaComponent,
     DetalleComponent,
     OrdenIngresoEgresoPipe,
+  ],
+  providers: [
+    provideCharts(withDefaultRegisterables())
   ]
 })
 export class IngresoEgresoModule { }

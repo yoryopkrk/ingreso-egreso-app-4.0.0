@@ -9,6 +9,7 @@ import * as fromIngresoEgreso from '../ingreso-egreso.reducer';
 
 @Component({
   selector: 'app-estadistica',
+  standalone: false,
   templateUrl: './estadistica.component.html',
   styles: []
 })

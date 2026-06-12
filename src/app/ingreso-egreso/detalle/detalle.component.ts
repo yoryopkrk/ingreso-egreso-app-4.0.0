@@ -11,6 +11,7 @@ import * as fromIngresoEgreso from '../ingreso-egreso.reducer';
 
 @Component({
   selector: 'app-detalle',
+  standalone: false,
   templateUrl: './detalle.component.html',
   styles: []
 })
@@ -36,7 +37,7 @@ export class DetalleComponent implements OnInit, OnDestroy {
   borrarItem( item: IngresoEgreso ) {
     this.ingresoEgresoService.borrarIngresoEgreso( item.uid )
         .then( () => {
-          Swal('Eliminado', item.descripcion, 'success');
+          Swal.fire('Eliminado', item.descripcion, 'success');
         });
   }
 

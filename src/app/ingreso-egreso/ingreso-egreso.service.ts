@@ -17,6 +17,7 @@ import { AuthService } from "../auth/auth.service";
 import { AppState } from "../app.reducer";
 import { SetItemsAction, UnsetItemsAction } from "./ingreso-egreso.actions";
 import type { User } from "../auth/user.model";
+import { selectAuthUser } from "../auth/auth.selectors";
 
 @Injectable({
   providedIn: "root",
@@ -35,16 +36,16 @@ export class IngresoEgresoService {
     this.ingresoEgresoListerSubcription.unsubscribe();
 
     this.ingresoEgresoListerSubcription = this.store
-      .select("auth")
-      .subscribe((auth) => {
+      .select(selectAuthUser)
+      .subscribe((user) => {
         this.ingresoEgresoItemsSubcription.unsubscribe();
 
-        if (!auth.user?.uid) {
+        if (!user?.uid) {
           this.store.dispatch(new UnsetItemsAction());
           return;
         }
 
-        this.ingresoEgresoItems(auth.user);
+        this.ingresoEgresoItems(user);
       });
   }
 

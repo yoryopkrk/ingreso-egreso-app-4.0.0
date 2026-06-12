@@ -7,6 +7,7 @@ import { IngresoEgresoService } from '../ingreso-egreso.service';
 import Swal from 'sweetalert2';
 
 import * as fromIngresoEgreso from '../ingreso-egreso.reducer';
+import { selectIngresoEgresoItems } from '../ingreso-egreso.selectors';
 
 @Component({
   selector: 'app-detalle',
@@ -24,9 +25,9 @@ export class DetalleComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.subscription = this.store.select('ingresoEgreso')
-      .subscribe((ingresoEgreso) => {
-        this.items = ingresoEgreso.items;
+    this.subscription = this.store.select(selectIngresoEgresoItems)
+      .subscribe((items) => {
+        this.items = items;
       });
   }
 

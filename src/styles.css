@@ -4,3 +4,11 @@
 .cursor {
     cursor: pointer;
 }
+
+.color-blanco {
+    color: white;
+}
+
+.display-block {
+    display: block;
+}

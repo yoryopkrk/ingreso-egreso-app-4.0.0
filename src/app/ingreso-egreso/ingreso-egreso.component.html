@@ -33,21 +33,29 @@
               <div class="form-group">
                   <label>Tipo</label>
                   <br>
-                  <button (click)="tipo='egreso'" *ngIf="tipo ==='ingreso'" type="button" class="btn btn-primary btn-block">Ingreso</button>
-                  <button (click)="tipo='ingreso'" *ngIf="tipo ==='egreso'" type="button" class="btn btn-warning btn-block">Egreso</button>
+                  @if (tipo === 'ingreso') {
+                    <button (click)="tipo='egreso'" type="button" class="btn btn-primary btn-block">Ingreso</button>
+                  }
+                  @if (tipo === 'egreso') {
+                    <button (click)="tipo='ingreso'" type="button" class="btn btn-warning btn-block">Egreso</button>
+                  }
               </div>
 
               <hr>
-              <button *ngIf="!cargando" [disabled]="forma.invalid" type="submit" class="btn btn-success mr-2">
-                <i class="fa fa-save"></i>
-                Agregar
-              </button>
+              @if (!cargando) {
+                <button [disabled]="forma.invalid" type="submit" class="btn btn-success mr-2">
+                  <i class="fa fa-save"></i>
+                  Agregar
+                </button>
+              }
 
               
-                <button *ngIf="cargando" disabled class="btn btn-success mr-2">
+              @if (cargando) {
+                <button disabled class="btn btn-success mr-2">
                   <i class="fa fa-spin fa-sync"></i>
                   Espere por favor...
-                </button> 
+                </button>
+              }
              
               
               <button type="reset" class="btn btn-light">Cancelar</button>

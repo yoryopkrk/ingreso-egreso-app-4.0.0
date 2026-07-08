@@ -6,7 +6,7 @@ import { Subscription } from "rxjs";
 import { AuthService } from "../../auth/auth.service";
 import { AppState } from "../../app.reducer";
 import { IngresoEgresoService } from "../../ingreso-egreso/ingreso-egreso.service";
-import { selectAuthUserName } from "../../../app/auth/auth.selectors";
+import { selectAuthUser } from "../../../app/auth/auth.selectors";
 
 @Component({
   selector: "app-sidebar",
@@ -16,6 +16,7 @@ import { selectAuthUserName } from "../../../app/auth/auth.selectors";
 })
 export class SidebarComponent implements OnInit, OnDestroy {
   nombre: string;
+  perfil: string;
   subscription: Subscription = new Subscription();
 
   constructor(
@@ -26,9 +27,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscription = this.store
-      .select(selectAuthUserName)
-      .subscribe((nombre: string) => {
-        this.nombre = nombre;
+      .select(selectAuthUser)
+      .subscribe((data: any) => {        
+        this.nombre = data?.nombre || '';
+        this.perfil = data?.role || '';
       });
   }
 

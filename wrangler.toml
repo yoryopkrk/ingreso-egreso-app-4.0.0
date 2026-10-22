@@ -1,0 +1,6 @@
+name = "ingresos-egresos"
+compatibility_date = "2026-10-22"
+
+[assets]
+directory = "./dist/ingresoEgresoApp"
+not_found_handling = "single-page-application"

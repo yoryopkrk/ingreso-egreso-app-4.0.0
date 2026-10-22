@@ -18,7 +18,7 @@
                 @for (item of items | ordenIngresoEgreso; track item.id) {
                   <tr>
                     <td>{{ item.descripcion }}</td>
-                    <td>{{ item.monto | currency }}</td>
+                    <td>{{ item.monto | pesos }}</td>
                     <td>
                       <span [ngClass]="{
                         'text-success': item.tipo === 'ingreso',

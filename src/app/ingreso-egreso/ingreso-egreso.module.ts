@@ -15,6 +15,7 @@ import { IngresoEgresoComponent } from "./ingreso-egreso.component";
 import { EstadisticaComponent } from "./estadistica/estadistica.component";
 import { DetalleComponent } from "./detalle/detalle.component";
 import { OrdenIngresoEgresoPipe } from "./orden-ingreso-egreso.pipe";
+import { PesosPipe } from "./pesos.pipe";
 
 import { SharedModule } from "../shared/shared.module";
 import { DashboardRoutingModule } from "../dashboard/dashboard-routing.module";
@@ -35,6 +36,7 @@ import { ingresoEgresoReducer } from "./ingreso-egreso.reducer";
     EstadisticaComponent,
     DetalleComponent,
     OrdenIngresoEgresoPipe,
+    PesosPipe,
   ],
   providers: [provideCharts(withDefaultRegisterables())],
 })
